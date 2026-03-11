@@ -65,7 +65,7 @@ pub async fn start(
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
     // Push into the matchmaking queue for this specific config
-    // We use a ZSET ordered by join_timestamp_ms so the engine pulls older tickets first
+    // We use a ZSET ordered by join_timestamp_ms so the matchmaker pulls older tickets first
     let _: () = conn
         .zadd(
             keys::queue_key(&payload.match_config_id),

@@ -11,14 +11,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let config_ = config::Config::builder()
         .add_source(config::File::with_name("etc/services.yaml").required(false))
-        .add_source(config::File::with_name("etc/engine.yaml").required(false))
+        .add_source(config::File::with_name("etc/matchmaker.yaml").required(false))
         .add_source(config::Environment::default())
         .build()?;
 
     let app_config: AppConfig = config_.try_deserialize()?;
 
     if let Err(e) = evaluator::run_loop(app_config.redis_url).await {
-        tracing::error!("Engine crashed: {:?}", e);
+        tracing::error!("Matchmaker crashed: {:?}", e);
     }
 
     Ok(())

@@ -16,7 +16,7 @@ tasks:
     desc: Build all services as Docker containers
     cmds:
       - docker build -t vibe-api:latest -f api.Dockerfile .
-      - docker build -t vibe-engine:latest -f engine.Dockerfile .
+      - docker build -t vibe-matchmaker:latest -f matchmaker.Dockerfile .
       - docker build -t vibe-allocator:latest -f allocator.Dockerfile .
 
   lint:
@@ -36,7 +36,7 @@ tasks:
       - docker run -d --rm --name vibe-redis -p 6379:6379 redis:alpine
       - sleep 2 # Wait for Redis to be ready
       # We use concurrently or bash job control to run all 3
-      - bash -c 'cargo run --bin api & cargo run --bin engine & cargo run --bin allocator & wait'
+      - bash -c 'cargo run --bin api & cargo run --bin matchmaker & cargo run --bin allocator & wait'
 
   serve:docker:
     desc: Run the whole stack (including Redis) using Docker Compose
@@ -48,4 +48,4 @@ tasks:
     cmds:
       - docker rm -f vibe-redis || true
       - docker compose down || true
-      - killall api engine allocator || true
+      - killall api matchmaker allocator || true

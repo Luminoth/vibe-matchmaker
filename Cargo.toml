@@ -2,7 +2,7 @@
 members = [
     "common",
     "api",
-    "engine",
+    "matchmaker",
     "allocator"
 ]
 

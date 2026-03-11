@@ -6,7 +6,7 @@ use tracing::info;
 pub mod rules;
 
 pub async fn run_loop(redis_url: String) -> Result<(), MatchmakerError> {
-    info!("Starting matchmaking engine evaluator using {}", redis_url);
+    info!("Starting matchmaking evaluator using {}", redis_url);
 
     let client = redis::Client::open(redis_url)?;
     let mut _conn = client.get_multiplexed_tokio_connection().await?;

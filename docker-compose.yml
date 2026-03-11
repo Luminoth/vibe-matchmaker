@@ -10,7 +10,7 @@ services:
       retries: 5
 
   api:
-    build: 
+    build:
       context: .
       dockerfile: api.Dockerfile
     ports:
@@ -19,10 +19,10 @@ services:
       redis:
         condition: service_healthy
 
-  engine:
+  matchmaker:
     build:
       context: .
-      dockerfile: engine.Dockerfile
+      dockerfile: matchmaker.Dockerfile
     depends_on:
       redis:
         condition: service_healthy
