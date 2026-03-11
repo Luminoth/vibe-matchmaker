@@ -1,0 +1,16 @@
+[package]
+name = "allocator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+common.workspace = true
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+redis.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+uuid.workspace = true
+aws-sdk-gamelift.workspace = true
+aws-config.workspace = true
