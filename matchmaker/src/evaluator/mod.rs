@@ -25,7 +25,10 @@ pub async fn run_loop(redis_url: String) -> Result<(), MatchmakerError> {
         // 1. Get all active match_config_ids
         // 2. Fetch the queue ZRANGEBYSCORE for each config
         // 3. Apply grouping rules to the tickets
-        let current_time = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_millis() as u64;
+        let current_time = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_millis() as u64;
         let _ = rules::evaluate_tickets(&dummy_config, &[], current_time);
 
         // 4. If a match is formed, transition statuses and push to allocator queue

@@ -37,9 +37,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let app = Router::new()
         .route("/matchmaking/start", post(routes::matchmaking::start))
         .route("/matchmaking/cancel", post(routes::matchmaking::cancel))
-        .route("/matchmaking/status/:ticket_id", get(routes::matchmaking::status))
+        .route(
+            "/matchmaking/status/:ticket_id",
+            get(routes::matchmaking::status),
+        )
         .with_state(state);
-    
+
     let addr = SocketAddr::from(([0, 0, 0, 0], app_config.port));
     info!("API server listening on {}", addr);
 

@@ -20,14 +20,17 @@ impl GameLiftManager {
         match_id: &str,
     ) -> Result<(String, u32, Option<String>), MatchmakerError> {
         info!("Allocating GameLift server for match: {}", match_id);
-
-        let response = self.client.create_game_session()
+        let response = self
+            .client
+            .create_game_session()
             .fleet_id(&self.fleet_id)
             .maximum_player_session_count(10) // In reality this would come from the match size or config
-            .game_properties(aws_sdk_gamelift::types::GameProperty::builder()
-                .key("match_id")
-                .value(match_id)
-                .build())
+            .game_properties(
+                aws_sdk_gamelift::types::GameProperty::builder()
+                    .key("match_id")
+                    .value(match_id)
+                    .build(),
+            )
             .send()
             .await
             .map_err(|e| {
