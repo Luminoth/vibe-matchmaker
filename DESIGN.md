@@ -62,3 +62,4 @@
   * Async Rust is perferred where it makes sense
 * Can assume access to Redis and the usual set of AWS services
 * Be careful for any locking bugs, requests should generally be non-blocking to services
+* Unit test wherever possible
