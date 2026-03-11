@@ -65,11 +65,3 @@
 * Unit test wherever possible
 * Read service configuration from YAML configuration files
   * Can assume these configuration files live in {run directory}/etc and are named after the services
-
-# General code rules
-
-* All clippy lints should be be left enabled
-* All clippy warnings should be denied
-* All clippy warnings should be fixed without the use of dead_code, unused, or underscore variables
-* TODO's should be implemented
-* Alpine should be used for Docker containers except where it doesn't make sense to do so
