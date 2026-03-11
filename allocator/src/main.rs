@@ -1,15 +1,26 @@
 pub mod gamelift;
 
+#[derive(serde::Deserialize)]
+struct AppConfig {
+    redis_url: String,
+    fleet_id: String,
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt::init();
 
-    let redis_url = std::env::var("REDIS_URL").unwrap_or_else(|_| "redis://127.0.0.1/".to_string());
-    let fleet_id = std::env::var("GAMELIFT_FLEET_ID").unwrap_or_else(|_| "fleet-dummy".to_string());
+    let config_ = config::Config::builder()
+        .add_source(config::File::with_name("etc/services.yaml").required(false))
+        .add_source(config::File::with_name("etc/allocator.yaml").required(false))
+        .add_source(config::Environment::default())
+        .build()?;
 
-    let manager = gamelift::client::GameLiftManager::new(fleet_id).await?;
+    let app_config: AppConfig = config_.try_deserialize()?;
 
-    if let Err(e) = gamelift::run_loop(redis_url, manager).await {
+    let manager = gamelift::client::GameLiftManager::new(app_config.fleet_id).await?;
+
+    if let Err(e) = gamelift::run_loop(app_config.redis_url, manager).await {
         tracing::error!("Allocator crashed: {:?}", e);
     }
 

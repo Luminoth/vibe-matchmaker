@@ -20,6 +20,7 @@ uuid = { version = "1.8.0", features = ["v4", "serde"] }
 axum = "0.7.5"
 aws-sdk-gamelift = "1.23.0"
 aws-config = "1.1.7"
+config = { version = "0.14.0", features = ["yaml"] }
 common = { path = "common" }
 
 [workspace.lints.rust]

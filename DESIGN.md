@@ -63,3 +63,13 @@
 * Can assume access to Redis and the usual set of AWS services
 * Be careful for any locking bugs, requests should generally be non-blocking to services
 * Unit test wherever possible
+* Read service configuration from YAML configuration files
+  * Can assume these configuration files live in {run directory}/etc and are named after the services
+
+# General code rules
+
+* All clippy lints should be be left enabled
+* All clippy warnings should be denied
+* All clippy warnings should be fixed without the use of dead_code, unused, or underscore variables
+* TODO's should be implemented
+* Alpine should be used for Docker containers except where it doesn't make sense to do so

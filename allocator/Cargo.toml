@@ -14,6 +14,4 @@ tracing-subscriber.workspace = true
 uuid.workspace = true
 aws-sdk-gamelift.workspace = true
 aws-config.workspace = true
-
-[lints]
-workspace = true
+config.workspace = true

@@ -3,8 +3,6 @@ version: '3.8'
 services:
   redis:
     image: redis:alpine
-    ports:
-      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -17,9 +15,6 @@ services:
       dockerfile: api.Dockerfile
     ports:
       - "8080:8080"
-    environment:
-      - REDIS_URL=redis://redis/
-      - PORT=8080
     depends_on:
       redis:
         condition: service_healthy
@@ -28,8 +23,6 @@ services:
     build:
       context: .
       dockerfile: engine.Dockerfile
-    environment:
-      - REDIS_URL=redis://redis/
     depends_on:
       redis:
         condition: service_healthy
@@ -38,9 +31,6 @@ services:
     build:
       context: .
       dockerfile: allocator.Dockerfile
-    environment:
-      - REDIS_URL=redis://redis/
-      - GAMELIFT_FLEET_ID=dummy-fleet
     depends_on:
       redis:
         condition: service_healthy
