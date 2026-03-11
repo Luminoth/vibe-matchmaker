@@ -2,7 +2,6 @@ use aws_sdk_gamelift::Client;
 use common::MatchmakerError;
 use tracing::info;
 
-#[allow(dead_code)]
 pub struct GameLiftManager {
     client: Client,
     fleet_id: String,
@@ -40,7 +39,7 @@ impl GameLiftManager {
             tracing::error!("GameLift response missing GameSession");
             MatchmakerError::Internal
         })?;
-        
+
         // IP Address and Port are guaranteed to be present for active sessions, but GameLift initially puts them in ACTIVATING state.
         // For a real production system we might need to place matches into `AllocatingServer` queue and poll DescribeGameSessions,
         // or rely on Amazon EventBridge -> SQS -> Lambda to notify us when the session is ACTIVE with IP/Port.
@@ -48,7 +47,7 @@ impl GameLiftManager {
         let ip = game_session.ip_address().unwrap_or("0.0.0.0").to_string();
         let port = game_session.port().unwrap_or(0) as u32;
         let dns = game_session.dns_name().map(|d| d.to_string());
-        
+
         Ok((ip, port, dns))
     }
 }

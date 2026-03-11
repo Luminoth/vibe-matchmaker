@@ -1,11 +1,11 @@
 use common::models::{config::MatchConfig, ticket::Ticket};
 
-#[allow(dead_code, unused_variables)]
 pub fn evaluate_tickets(
     config: &MatchConfig,
     tickets: &[Ticket],
     current_time_ms: u64,
 ) -> Option<Vec<Ticket>> {
+    tracing::debug!("Evaluating tickets at time: {}", current_time_ms);
     let mut current_group = Vec::new();
     let mut current_players = 0;
 

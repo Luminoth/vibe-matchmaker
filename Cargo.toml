@@ -21,3 +21,9 @@ axum = "0.7.5"
 aws-sdk-gamelift = "1.23.0"
 aws-config = "1.1.7"
 common = { path = "common" }
+
+[workspace.lints.rust]
+warnings = "deny"
+
+[workspace.lints.clippy]
+all = "deny"
