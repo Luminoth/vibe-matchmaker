@@ -8,3 +8,4 @@
 * There are no unit tests
 * API idempotency check isn't implemented
 * `task serve` failes if redis is running on the system
+* Run everything in minikube
