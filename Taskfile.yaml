@@ -15,9 +15,9 @@ tasks:
   build:docker:
     desc: Build all services as Docker containers
     cmds:
-      - docker build -t vibe-api:latest -f api.Dockerfile .
-      - docker build -t vibe-matchmaker:latest -f matchmaker.Dockerfile .
-      - docker build -t vibe-allocator:latest -f allocator.Dockerfile .
+      - docker build -t vibe-matchmaker-api:latest -f api.Dockerfile .
+      - docker build -t vibe-matchmaker-matchmaker:latest -f matchmaker.Dockerfile .
+      - docker build -t vibe-matchmaker-allocator:latest -f allocator.Dockerfile .
 
   lint:
     desc: Run clippy and format checks on all code
@@ -33,7 +33,7 @@ tasks:
   serve:
     desc: Run the Redis dependency in Docker, then run all 3 services locally
     cmds:
-      - docker run -d --rm --name vibe-redis -p 6379:6379 redis:alpine
+      - docker run -d --rm --name vibe-matchmaker-redis -p 6379:6379 redis:alpine
       - sleep 2 # Wait for Redis to be ready
       # We use concurrently or bash job control to run all 3
       - bash -c 'cargo run --bin api & cargo run --bin matchmaker & cargo run --bin allocator & wait'
@@ -46,6 +46,6 @@ tasks:
   stop:
     desc: Stop any locally running or dockerized services
     cmds:
-      - docker rm -f vibe-redis || true
+      - docker rm -f vibe-matchmaker-redis || true
       - docker compose down || true
       - killall api matchmaker allocator || true
