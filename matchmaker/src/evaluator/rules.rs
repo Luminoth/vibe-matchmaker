@@ -1,4 +1,4 @@
-use common::models::{config::MatchConfig, ticket::Ticket};
+use common::models::{match_config::MatchConfig, ticket::Ticket};
 
 pub fn evaluate_tickets(
     config: &MatchConfig,

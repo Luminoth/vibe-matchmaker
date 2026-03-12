@@ -1,6 +1,6 @@
 use crate::gamelift::client::GameLiftManager;
 use common::{MatchmakerError, models::match_state::Match, redis::keys};
-use redis::AsyncCommands;
+use redis::{AsyncCommands, aio::MultiplexedConnection};
 use tracing::{info, warn};
 
 pub mod client;
@@ -18,53 +18,11 @@ pub async fn run_loop(redis_url: String, manager: GameLiftManager) -> Result<(),
         let result: Option<(String, String)> = conn.blpop(&queue_key, 5.0).await.unwrap_or(None);
 
         if let Some((_, match_json)) = result
-            && let Ok(mut match_data) = serde_json::from_str::<Match>(&match_json)
+            && let Ok(match_data) = serde_json::from_str::<Match>(&match_json)
         {
             match manager.allocate_server(&match_data.id).await {
                 Ok((ip, port, dns)) => {
-                    info!(
-                        "Allocated server for match {}: {}:{}",
-                        match_data.id, ip, port
-                    );
-
-                    // Update the match state
-                    let completed_status = common::models::match_state::TicketStatus::Completed {
-                        match_id: match_data.id.clone(),
-                        connection_ip: ip.clone(),
-                        connection_port: port,
-                        connection_dns_name: dns.clone(),
-                    };
-                    match_data.status = completed_status;
-                    match_data.connection_ip = Some(ip.clone());
-                    match_data.connection_port = Some(port);
-                    match_data.connection_dns_name = dns.clone();
-
-                    // Save updated match object back to Redis
-                    let _: () = conn
-                        .set(
-                            keys::match_data_key(&match_data.id),
-                            serde_json::to_string(&match_data).unwrap(),
-                        )
-                        .await
-                        .unwrap();
-
-                    // Also update each individual ticket's status so the players polling can see it
-                    let complete_status = serde_json::to_string(
-                        &common::models::match_state::TicketStatus::Completed {
-                            match_id: match_data.id.clone(),
-                            connection_ip: ip,
-                            connection_port: port,
-                            connection_dns_name: dns,
-                        },
-                    )
-                    .unwrap();
-
-                    for ticket in match_data.tickets {
-                        let _: () = conn
-                            .set(keys::ticket_status_key(&ticket.id), &complete_status)
-                            .await
-                            .unwrap();
-                    }
+                    on_allocate_success(match_data, &mut conn, ip, port, dns).await
                 }
                 Err(e) => {
                     warn!(
@@ -75,5 +33,56 @@ pub async fn run_loop(redis_url: String, manager: GameLiftManager) -> Result<(),
                 }
             }
         }
+    }
+}
+
+async fn on_allocate_success(
+    mut match_data: Match,
+    conn: &mut MultiplexedConnection,
+    ip: String,
+    port: u32,
+    dns: Option<String>,
+) {
+    info!(
+        "Allocated server for match {}: {}:{}",
+        match_data.id, ip, port
+    );
+
+    // Update the match state
+    let completed_status = common::models::match_state::TicketStatus::Completed {
+        match_id: match_data.id.clone(),
+        connection_ip: ip.clone(),
+        connection_port: port,
+        connection_dns_name: dns.clone(),
+    };
+    match_data.status = completed_status;
+    match_data.connection_ip = Some(ip.clone());
+    match_data.connection_port = Some(port);
+    match_data.connection_dns_name = dns.clone();
+
+    // Save updated match object back to Redis
+    let _: () = conn
+        .set(
+            keys::match_data_key(&match_data.id),
+            serde_json::to_string(&match_data).unwrap(),
+        )
+        .await
+        .unwrap();
+
+    // Also update each individual ticket's status so the players polling can see it
+    let complete_status =
+        serde_json::to_string(&common::models::match_state::TicketStatus::Completed {
+            match_id: match_data.id.clone(),
+            connection_ip: ip,
+            connection_port: port,
+            connection_dns_name: dns,
+        })
+        .unwrap();
+
+    for ticket in match_data.tickets {
+        let _: () = conn
+            .set(keys::ticket_status_key(&ticket.id), &complete_status)
+            .await
+            .unwrap();
     }
 }

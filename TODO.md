@@ -6,3 +6,4 @@
 * API has no authentication
 * Need to use redis connection pooling everywhere
 * There are no unit tests
+* API idempotency check isn't implemented

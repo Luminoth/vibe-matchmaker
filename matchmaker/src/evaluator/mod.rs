@@ -18,7 +18,7 @@ pub async fn run_loop(redis_url: String) -> Result<(), MatchmakerError> {
     // We would fetch distinct `matchmaker:queue:*` keys and process them.
     // For simplicity, we'll just fake scanning queues.
 
-    let dummy_config = common::models::config::MatchConfig::default();
+    let dummy_config = common::models::match_config::MatchConfig::default();
 
     loop {
         // Here we would:

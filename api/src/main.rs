@@ -22,11 +22,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt::init();
 
     let config_ = config::Config::builder()
-        // Common configuration
         .add_source(config::File::with_name("etc/services.yaml").required(false))
-        // Service specific configuration
         .add_source(config::File::with_name("etc/api.yaml").required(false))
-        // Environment variables as overrides
         .add_source(config::Environment::default())
         .build()?;
 
