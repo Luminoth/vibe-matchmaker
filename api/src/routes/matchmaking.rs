@@ -1,9 +1,9 @@
 use crate::state::AppState;
 use axum::{
+    Json,
     extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
-    Json,
 };
 use common::{
     models::{
@@ -46,7 +46,7 @@ pub async fn start(
 
     let mut conn = state
         .redis_client
-        .get_multiplexed_tokio_connection()
+        .get_multiplexed_async_connection()
         .await
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
@@ -95,7 +95,7 @@ pub async fn cancel(
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     let mut conn = state
         .redis_client
-        .get_multiplexed_tokio_connection()
+        .get_multiplexed_async_connection()
         .await
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
@@ -156,7 +156,7 @@ pub async fn status(
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     let mut conn = state
         .redis_client
-        .get_multiplexed_tokio_connection()
+        .get_multiplexed_async_connection()
         .await
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 

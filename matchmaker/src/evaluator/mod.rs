@@ -9,7 +9,7 @@ pub async fn run_loop(redis_url: String) -> Result<(), MatchmakerError> {
     info!("Starting matchmaking evaluator using {}", redis_url);
 
     let client = redis::Client::open(redis_url)?;
-    let mut _conn = client.get_multiplexed_tokio_connection().await?;
+    let mut _conn = client.get_multiplexed_async_connection().await?;
 
     // In a real system, you'd want to track ALL active configs
     // For this example, we'll just poll a known config or have a set of defined configs.

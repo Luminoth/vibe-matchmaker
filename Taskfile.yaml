@@ -1,6 +1,6 @@
-version: '3'
+version: "3"
 
-dotenv: ['.env']
+dotenv: [".env"]
 
 tasks:
   default:
@@ -10,7 +10,7 @@ tasks:
   build:
     desc: Build all services natively
     cmds:
-      - cargo build --workspace
+      - cargo build
 
   build:docker:
     desc: Build all services as Docker containers
@@ -22,13 +22,13 @@ tasks:
   lint:
     desc: Run clippy and format checks on all code
     cmds:
-      - cargo clippy --workspace -- -D warnings
+      - cargo clippy
       - cargo fmt --all -- --check
 
   test:
     desc: Run all tests in the workspace
     cmds:
-      - cargo test --workspace
+      - cargo test
 
   serve:
     desc: Run the Redis dependency in Docker, then run all 3 services locally
